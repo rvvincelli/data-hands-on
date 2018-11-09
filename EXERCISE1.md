@@ -13,6 +13,10 @@
                                                                         
 ```
 
+## Usage disclaimer
+
+Everything has been tested on osx; in principle, a modern Docker setup on Windows is also fine, but your mileage, in terms of spaces, quotes and in general command-line things, may vary. Please do get in touch in case you get stuck!
+
 ## The story
 
 The goal of your first data assignment is to support a new up and coming food delivery startup, *Slang-the-food.com* in taking an informed decision on what is the best strategy to enter the Amsterdam market.
