@@ -15,15 +15,12 @@
 
 ## The story
 
+The goal of your first data assignment is to support a new up and coming food delivery startup, *Slang-the-food.com* in taking an informed decision on what is the best strategy to enter the Amsterdam market.
+Their fleet is entirely composed of bikes, so they would like to take over bike-friendly neighborhoods first.
 
-++++++++
+A sworn enemy, *Deliver Foo*, does exactly the opposite by using Apecar's to deliver, and they would rather start from a car-friendly, or better bike-unfriendly, area.
 
-CHANGE IMAGE USE:
-docker run --name postgis -p 5432:5432 -v $(pwd)/data:/media/host/data -d baffolobill/postgis-gdal
-
-+++++++++
-
-The goal of your first data assignment is to support a new up and coming food delivery startup, *Slang-the-food.com* in taking an informed decision on what is the best strategy to enter the Amsterdam market. Their fleet is entirely compose of bikes, so they would like to take over bike-friendly neighborhoods first. A sworn enemy, *Deliver Foo*, does exactly the opposite by using Apecar's to deliver, and they would rather start from a car-friendly area. Our goal is to come to supporting the client in finding an optimal takeover strategy, with the help of intuition and data.
+Our goal is to come to supporting the client in finding an optimal takeover strategy, with the help of intuition and data.
 
 ## Exercise 1
 
@@ -45,13 +42,14 @@ We will use an all-in image containing among others:
 
 Let us try out a simple command on the container:
 
-`docker run -t -i geographica/postgis -- ls`
+`docker run -t -i baffolobill/postgis -- ls`
 
 You should see some known directories listed.
 
 Now we will boot the image with two extra options - make sure you run this from the project root:
 
-`docker run --name postgis -p 5432:5432 -v $(pwd)/data:/media/host/data -d geographica/postgis`
+`docker run --name postgis -p 5432:5432 -v $(pwd)/data:/media/host/data -d baffolobill/postgis`
+
 Now perhaps you know it already, but the interesting options are:
 
 * `-p <LOCAL_PORT>:<CONTAINER_PORT>` redirects the specified port on the host (your computer) to the specified port on the container; we will not need this but it is useful to know

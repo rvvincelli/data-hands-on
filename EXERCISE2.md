@@ -44,20 +44,37 @@ WHERE ST_IsValid(p.geom) AND ST_IsValid(l.geom) AND ST_Intersects(p.geom, l.geom
 ```
 Do not worry about the `ST` functions - those are PostGIS own geometrical functions, there for us to use. What happens if you pull out either `ST_IsValid` checks, or both? You will always get dirty data in real life!
 
-Try to translate the query above into our tables: rename the template accordingly to come to the answer.
+Try to translate the query above into our tables: rename the template accordingly to come to the answer. When you get the first version, add the following:
 
-Hey are we missing something? We would like the total per neighborhood!
+* the total per neighborhood
+* normalize by area (use `ST_Area`)
+* make it a `VIEW`
 
-And further, normalize it by area; for simplicity, you may just divide by the area, `ST_Area`, then we can rescale from 1 to 5.
-CEILING([COUNT] * 10.0 / (SELECT MAX([Count])  - MIN([Count]) + 1 FROM #Scale)) AS [Scale]
-
-How does the final query look like?
+We are now ready to create a table with this; as the last refinement, let us rescale everything between 1 and 5; the general SQL for rescaling in `[1, N]` is:
+`CEILING(<VALUE_TO_RESCALE> * <N-1> / ((SELECT MAX(<VALUE_TO_RESCALE>) FROM <TABLE>)  - (SELECT MIN(<VALUE_TO_RESCALE>) FROM <TABLE>))) AS <RESCALED_VALUE>`
 
 
 ## Bike-friendliness graph
 
-then export to a csv
-the read into spark
-then apply prims mst
+To prepare for the next exercise, let us create a graph. A graph is a collection `G=(V,E)` where `V` are the vertices or nodes and `E` the relations or pairs between them. Actually we will create more than one graph, a collection. 
 
-Ready? OK, time to create a table with the so-called CTAS syntax.
+Our table entries will be of the form `A, B, bf_X, bf_X` for `X in 1 ... 5`: two neighborhoods are connected if they are next to each other on the map and they share the same bike friendliness.
+
+To create this table:
+
+```sql
+CREATE TABLE hood_graphs AS SELECT a.hood AS a_hood, b.hood AS b_hood, a.bike_friend_scale AS a_scale, b.bike_friend_scale AS b_scale FROM bike_friendliness a CROSS JOIN bike_friendliness b WHERE a.hood != b.hood AND ST_Distance(a.hood_poly, b.hood_poly) < 0.01 AND a.bike_friend_scale = b.bike_friend_scale;
+```
+
+## Save the data
+
+To close this exercise, we will save this data result. We did not setup the PostGIS container to be permanent which means that tables will be gone if we close it.
+
+This is easily achieved with the following command in PostGIS:
+`COPY hood_graphs TO '/media/host/data/bike_graphs.csv' DELIMITER ',' CSV HEADER;`
+
+In the data directory, the CSV file will appear.
+
+## See you soon
+
+We can now move on to the next exercise!
