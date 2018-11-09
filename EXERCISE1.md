@@ -42,13 +42,15 @@ We will use an all-in image containing among others:
 
 Let us try out a simple command on the container:
 
-`docker run -t -i baffolobill/postgis -- ls`
+`docker run -t -i baffolobill/postgis-gdal -- ls`
 
 You should see some known directories listed.
 
 Now we will boot the image with two extra options - make sure you run this from the project root:
 
-`docker run --name postgis -p 5432:5432 -v $(pwd)/data:/media/host/data -d baffolobill/postgis`
+`docker run --name postgis -p 5432:5432 -v ./data:/media/host/data -d baffolobill/postgis-gdal`
+
+or replace `.\data` with the right full path eg `"C:\Documents\somewhere\data"`.
 
 Now perhaps you know it already, but the interesting options are:
 
@@ -62,7 +64,7 @@ Now perhaps you know it already, but the interesting options are:
 
 See what is inside the geo database:
 
-`docker run -it --link <POSTGIS_CONTAINER_ID>:postgres --rm postgres sh -c 'exec psql -h "$POSTGRES_PORT_5432_TCP_ADDR" -p "$POSTGRES_PORT_5432_TCP_PORT" -U postgres'`
+`docker run -it --link <POSTGIS_CONTAINER_ID>:postgres --rm postgres sh -c "exec psql -h "$POSTGRES_PORT_5432_TCP_ADDR" -p "$POSTGRES_PORT_5432_TCP_PORT" -U postgres"`
 
 without getting too complicated on this, we want to connect to the running database by using the standard client, so we run another instance attaching to our main one. Replace `<POSTGRES_CONTAINER_ID` with the id you see under `docker container ls`. The password is: `postgres`.
 
@@ -93,6 +95,10 @@ Now give:
 you will see that PostgreSQL is a supported format.
 
 ## Our first import
+
+Addition - data copy (fix for Windows not allowing the mount, perhaps ITS security; give this on your laptop black window):
+
+`docker cp C:\Users\path\to\data <POSTGIS_CONTAINER_ID>:/media/host/data`
 
 From the container shell, give:
 
